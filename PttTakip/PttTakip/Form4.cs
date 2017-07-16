@@ -63,6 +63,11 @@ namespace PttTakip
 
         public async Task AfterShipTakipEt(string kargokodu)
         {
+            List<string> durum = new List<string>(); //
+            List<string> kargo = new List<string>(); //
+            List<string> yer = new List<string>();   //  -> Genel kargo durumları list i
+            List<string> tarih = new List<string>(); //
+            List<string> saat = new List<string>();  //
             System.Uri url = new Uri("https://track.aftership.com/" + kargokodu); // Örnek olarak -> https://track.aftership.com/1265562
             WebClient client = new WebClient(); // -> Webclient başlatır
             client.Encoding = Encoding.UTF8; // -> UTF-8 ile okunması dil kaynaklı sorunları çözer
@@ -70,11 +75,6 @@ namespace PttTakip
             string html = client.DownloadString(url); // -> Verilen url adresini indirir ve html'e atar
             HtmlAgilityPack.HtmlDocument doc1 = new HtmlAgilityPack.HtmlDocument(); // -> doc1 adlı HTMLDocument oluşturur
             doc1.LoadHtml(html); // -> İndirilen html stringini doc1'e parametre olarak atar ve yükler ( indirilen string in ele alınabilmesini sağlar )
-            List<string> durum = new List<string>(); //
-            List<string> kargo = new List<string>(); //
-            List<string> yer = new List<string>();   //  -> Genel kargo durumları list i
-            List<string> tarih = new List<string>(); //
-            List<string> saat = new List<string>();  //
             string aranacakclass = "checkpoint__content"; // -> Html saysafındaki aranacak class.
             var aranacakclassSonuc =
                doc1.DocumentNode.SelectNodes(string.Format("//*[contains(@class,'{0}')]", aranacakclass)); // -> Aranılacak class taki bulunan tüm düğümleri aranacakclassSonuc'a atar . 
@@ -793,7 +793,7 @@ namespace PttTakip
             }
             List<HtmlElement> elements = new List<HtmlElement>();
             await Task.Delay(5000);
-            var sonuc = webBrowser4.Document.GetElementById("trackingInfoEvents");
+            var sonuc = webBrowser4.Document.GetElementById("trackingEvents");
             /*var sonuc = webBrowser4.Document.GetElementsByTagName("div");
             foreach (HtmlElement item in sonuc)
             {
@@ -804,9 +804,13 @@ namespace PttTakip
             }*/
             foreach (HtmlElement item in sonuc.Children)
             {
-                saatvezaman.Add(item.Children[0].InnerText);
-                durum.Add(item.Children[2].InnerText);
-                kargo.Add(item.Children[3].InnerText);
+                if (item.Children.Count>=3)
+                {
+                    saatvezaman.Add(item.Children[0].InnerText);
+                    durum.Add(item.Children[2].InnerText);
+                    kargo.Add(item.Children[3].InnerText);
+                }
+
             }
             if (track24counter != 0)
             {
