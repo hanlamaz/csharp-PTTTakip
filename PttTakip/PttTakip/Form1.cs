@@ -320,16 +320,16 @@ namespace PttTakip
                     }
                     else
                     {
-                        Task aftership = f4.AfterShipTakipEt(kargokodu);
-                        await aftership;
+                        Task track24 = f4.Track24(kargokodu);
+                        await track24;
                         if (f4.inforeceivedtrigger == 0)
                         {
-                            Task track24 = f4.Track24(kargokodu);
-                            await track24;
+                            Task cainao = f4.AliexpressTakipEt(kargokodu);
+                            await cainao;
                             if (f4.inforeceivedtrigger == 0)
                             {
-                                Task cainao = f4.AliexpressTakipEt(kargokodu);
-                                await cainao;
+                                Task aftership = f4.AfterShipTakipEt(kargokodu);
+                                await aftership;
                                 if (f4.inforeceivedtrigger == 0)
                                 {
                                     Task globaltrack = f4.GlobalTrack(kargokodu);

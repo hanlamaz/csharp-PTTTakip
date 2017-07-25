@@ -250,16 +250,16 @@ namespace PttTakip
                             }
                         }
                         string malezyakargokodu = cozumleyicidizi[cozumleyicidizi.Length - 1];
-                        Task aftership = AfterShipTakipEt(malezyakargokodu);
-                        await aftership;
+                        Task track24 = Track24(malezyakargokodu);
+                        await track24;
                         if (inforeceivedtrigger == 0)
                         {
-                            Task track24 = Track24(malezyakargokodu);
-                            await track24;
+                            Task cainao = AliexpressTakipEt(malezyakargokodu);
+                            await cainao;
                             if (inforeceivedtrigger == 0)
                             {
-                                Task cainao = AliexpressTakipEt(malezyakargokodu);
-                                await cainao;
+                                Task aftership = AfterShipTakipEt(malezyakargokodu);
+                                await aftership;
                                 if (inforeceivedtrigger == 0)
                                 {
                                     Task globaltrack = GlobalTrack(malezyakargokodu);
@@ -485,20 +485,29 @@ namespace PttTakip
             var sonuclar = doc1.DocumentNode.SelectNodes("//td");
             if (sonuclar != null)
             {
-                for (int i = 7; i < sonuclar.Count() - 1; i = i + 4)
+                if (sonuclar.Count != 0 || sonuclar.Count != 0)
                 {
-                    tarih.Add(sonuclar[i].InnerText);
-                    saat.Add(sonuclar[i].InnerText);
-                    durum.Add(sonuclar[i + 1].InnerText + "   " + sonuclar[i + 3].InnerText);
-                    yer.Add(sonuclar[i + 2].InnerText);
+
+                    for (int i = 7; i < sonuclar.Count() - 1; i = i + 4)
+                    {
+                        tarih.Add(sonuclar[i].InnerText);
+                        saat.Add(sonuclar[i].InnerText);
+                        durum.Add(sonuclar[i + 1].InnerText + "   " + sonuclar[i + 3].InnerText);
+                        yer.Add(sonuclar[i + 2].InnerText);
+                    }
+                    for (int i = 0; i < durum.Count(); i++) // -> Gelen sonuçlara bakıldığında kargo sonuçları ters zamanlı geliyordu bu yüzden tersten alındı
+                    {
+                        string[] dizi = { TarihCevir(tarih[i]), SaatCevir(saat[i]), durum[i].Trim(), yer[i].Trim(), "" }; // Kargo hareketinin tüm birimleri eklenerek bir dizi oluşturulur
+                        listView1.Items.Add(new ListViewItem(dizi)); // O dizi listview'e eklenir
+                    }
+                    trackchinapostglobalfinished = 1;
+                    inforeceivedtrigger = 1;
                 }
-                for (int i = 0; i < durum.Count(); i++) // -> Gelen sonuçlara bakıldığında kargo sonuçları ters zamanlı geliyordu bu yüzden tersten alındı
+                else
                 {
-                    string[] dizi = { TarihCevir(tarih[i]), SaatCevir(saat[i]), durum[i].Trim(), yer[i].Trim(), "" }; // Kargo hareketinin tüm birimleri eklenerek bir dizi oluşturulur
-                    listView1.Items.Add(new ListViewItem(dizi)); // O dizi listview'e eklenir
+                    trackchinapostglobalfinished = 1;
+                    inforeceivedtrigger = 0;
                 }
-                trackchinapostglobalfinished = 1;
-                inforeceivedtrigger = 1;
             }
             else
             {
